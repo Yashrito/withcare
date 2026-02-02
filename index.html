@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Just for You 💕</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-
   <div class="card">
     <h1>Hey you 💖</h1>
+
     <p class="subtitle">
       Send me anything you like…  
       I promise I’ll handle it carefully ✨
@@ -18,20 +18,28 @@
 
     <form action="/api/upload" method="POST" enctype="multipart/form-data">
       <label class="file-box">
-        <input type="file" name="file" required>
-        <span>Choose a photo or video 📸🎥</span>
+        <input type="file" name="file" id="fileInput" required />
+        <span id="fileText">Choose a photo or video 📸🎥</span>
       </label>
 
       <button type="submit">Send to me 💌</button>
     </form>
 
     <p class="footer">
-      This goes straight to me —  
-      no one else sees it 🌸
+      This goes straight to me — no one else sees it 🌸
     </p>
   </div>
 
-  <div class="hearts"></div>
+  <script>
+    const fileInput = document.getElementById("fileInput");
+    const fileText = document.getElementById("fileText");
 
+    fileInput.addEventListener("change", () => {
+      if (fileInput.files.length > 0) {
+        fileText.textContent =
+          "Selected: " + fileInput.files[0].name + " 💖";
+      }
+    });
+  </script>
 </body>
 </html>
