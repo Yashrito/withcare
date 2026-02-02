@@ -2,44 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Just for You 💕</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>With Care 💗</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
-  <div class="card">
-    <h1>Hey you 💖</h1>
 
-    <p class="subtitle">
-      Send me anything you like…  
-      I promise I’ll handle it carefully ✨
-    </p>
+  <div class="container">
+    <div class="card fade-in">
+      <h1>With Care 💖</h1>
+      <p class="subtitle">
+        Send me anything you want…<br>
+        I’ll keep it safe ✨
+      </p>
 
-    <form action="/api/upload" method="POST" enctype="multipart/form-data">
-      <label class="file-box">
-        <input type="file" name="file" id="fileInput" required />
-        <span id="fileText">Choose a photo or video 📸🎥</span>
+      <label class="upload-box">
+        <input type="file" id="fileInput" hidden />
+        <span>Select a file 💌</span>
       </label>
 
-      <button type="submit">Send to me 💌</button>
-    </form>
+      <div id="fileInfo" class="file-info hidden"></div>
 
-    <p class="footer">
-      This goes straight to me — no one else sees it 🌸
-    </p>
+      <button id="sendBtn" onclick="uploadFile()">Send with love 💞</button>
+
+      <p id="status" class="status"></p>
+    </div>
   </div>
 
-  <script>
-    const fileInput = document.getElementById("fileInput");
-    const fileText = document.getElementById("fileText");
-
-    fileInput.addEventListener("change", () => {
-      if (fileInput.files.length > 0) {
-        fileText.textContent =
-          "Selected: " + fileInput.files[0].name + " 💖";
-      }
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
