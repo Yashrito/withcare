@@ -1,5 +1,3 @@
-import formidable from "formidable";
-import fs from "fs";
 import fetch from "node-fetch";
 import FormData from "form-data";
 
@@ -10,29 +8,46 @@ export const config = {
 };
 
 export default async function handler(req, res) {
-  const form = formidable();
+  if (req.method !== "POST") {
+    return res.status(405).send("Method not allowed");
+  }
 
-  form.parse(req, async (err, fields, files) => {
-    if (err) return res.status(500).send("Upload failed 😢");
+  try {
+    const chunks = [];
+    for await (const chunk of req) chunks.push(chunk);
+    const buffer = Buffer.concat(chunks);
 
-    const file = files.file;
+    const contentType = req.headers["content-type"];
+    const boundary = contentType.split("boundary=")[1];
+    const parts = buffer.toString("binary").split(boundary);
 
-    const botToken = process.env.BOT_TOKEN;
-    const chatId = process.env.CHAT_ID;
+    const filePart = parts.find(p => p.includes("filename="));
+    if (!filePart) {
+      return res.status(400).send("No file received");
+    }
 
-    const data = new FormData();
-    data.append(
+    const filename = filePart.match(/filename="(.+?)"/)[1];
+    const fileBinary = filePart.split("\r\n\r\n")[1].slice(0, -2);
+
+    const formData = new FormData();
+    formData.append("chat_id", process.env.CHAT_ID);
+    formData.append(
       "document",
-      fs.createReadStream(file.filepath),
-      file.originalFilename
+      Buffer.from(fileBinary, "binary"),
+      filename
     );
-    data.append("chat_id", chatId);
 
-    await fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, {
-      method: "POST",
-      body: data,
-    });
+    await fetch(
+      `https://api.telegram.org/bot${process.env.BOT_TOKEN}/sendDocument`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
 
-    res.send("Sent successfully 💖");
-  });
+    res.status(200).send("Sent with care 💖");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Something went wrong 😢");
+  }
 }
